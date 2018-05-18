@@ -16,6 +16,7 @@
  */
 package org.relique.jdbc.csv;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -45,6 +46,7 @@ import org.relique.io.TableReader;
  */
 public class CsvDriver implements Driver
 {
+	static final String LOGS = "logs";
 	public static final String DEFAULT_EXTENSION = ".csv";
 	public static final String DEFAULT_SEPARATOR = ",";
 	public static final char DEFAULT_QUOTECHAR = '"';
@@ -172,6 +174,22 @@ public class CsvDriver implements Driver
 		String filePath = url.substring(URL_PREFIX.length());
 
 		writeLog("CsvDriver:connect() - filePath=" + filePath);
+
+		String debug = info.getProperty(LOGS);
+		if (debug != null) {
+			PrintWriter pw;
+			if (debug.equalsIgnoreCase("out"))
+				pw = new java.io.PrintWriter(System.out, true);
+			else {
+				try
+				{
+					pw = new PrintWriter(new java.io.FileWriter(new File(debug)), true);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			DriverManager.setLogWriter(pw);
+		}
 
 		CsvConnection connection;
 		if (filePath.startsWith(READER_CLASS_PREFIX))

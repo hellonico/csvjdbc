@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.relique.io.DataReader;
+import org.relique.util.Numbers;
 
 /**
  * This class implements the java.sql.ResultSet JDBC interface for the
@@ -176,7 +177,11 @@ public class CsvResultSet implements ResultSet
 					}
 					else
 					{
-						retval = result1.compareTo(result2);
+						if(result1 instanceof Number && result2 instanceof Number) {
+							retval = Numbers.compare((Number)result1 ,(Number)result2);
+						}  else {
+							retval = result1.compareTo(result2);
+						}
 					}
 					if (direction.intValue() < 0)
 						retval = -retval;

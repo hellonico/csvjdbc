@@ -345,11 +345,11 @@ public class StringConverter
 		int ylen = 4;
 
 		int day = 1, month = 1, year = 1;
-		if (dpos > mpos)
+		if (dpos == -1 || dpos > mpos)
 			day += 1;
 		else
 			month += 1;
-		if (dpos > ypos)
+		if (dpos == -1 || dpos > ypos)
 			day += 1;
 		else
 			year += 1;
@@ -402,12 +402,24 @@ public class StringConverter
 					proposedYear += 100;
 				yearGroup = String.format("%04d", proposedYear);
 			}
-			String monthGroup = m.group(month);
-			if (monthGroup.length() < 2)
+			String monthGroup;
+			if(m.groupCount()>1) {
+			 monthGroup = m.group(month);
+			if (monthGroup!=null && monthGroup.length() < 2)
 				monthGroup = "0" + monthGroup;
-			String dayGroup = m.group(day);
-			if (dayGroup.length() < 2)
-				dayGroup = "0" + dayGroup;
+			}
+			else 
+				monthGroup = "01";
+			
+			String dayGroup;
+			if(dpos!=-1) {
+				dayGroup = m.group(day);
+				if (dayGroup.length() < 2)
+					dayGroup = "0" + dayGroup;
+			} else {
+				dayGroup = "01";
+			}
+				
 			String retval = yearGroup + "-" + monthGroup + "-" + dayGroup;
 			return retval;
 		}
