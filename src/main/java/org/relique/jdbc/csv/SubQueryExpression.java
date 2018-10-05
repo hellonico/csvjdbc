@@ -20,6 +20,7 @@ package org.relique.jdbc.csv;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,14 +34,20 @@ class SubQueryExpression extends Expression
 	{
 		this.parsedStatement = parsedStatement;
 	}
+	
+	static HashMap envs = new HashMap();
 
 	public Object eval(Map<String, Object> env) throws SQLException
 	{
+		SubQueryEqualsRowMatcher cache = (SubQueryEqualsRowMatcher)envs.get(env);
+		if(cache!=null)
+			return cache.getValues().get(0); 
 		/*
 		 * Evaluate sub-query that returns a single value.
 		 */
 		SubQueryEqualsRowMatcher rowMatcher = new SubQueryEqualsRowMatcher();
 		evalList(env, rowMatcher);
+		envs.put(env, rowMatcher);
 		List<Object> rowMatcherValues = rowMatcher.getValues();
 		int nRows = rowMatcherValues.size();
 		if (nRows == 0)

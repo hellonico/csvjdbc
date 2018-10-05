@@ -176,20 +176,20 @@ public class CsvDriver implements Driver
 		writeLog("CsvDriver:connect() - filePath=" + filePath);
 
 		String debug = info.getProperty(LOGS);
-		if (debug != null) {
-			PrintWriter pw;
-			if (debug.equalsIgnoreCase("out"))
-				pw = new java.io.PrintWriter(System.out, true);
-			else {
-				try
-				{
-					pw = new PrintWriter(new java.io.FileWriter(new File(debug)), true);
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			DriverManager.setLogWriter(pw);
-		}
+//		if (debug != null) {
+//			PrintWriter pw;
+//			if (debug.equalsIgnoreCase("out"))
+//				pw = new java.io.PrintWriter(System.out, true);
+//			else {
+//				try
+//				{
+//					pw = new PrintWriter(new java.io.FileWriter(new File(debug)), true);
+//				} catch (IOException e) {
+//					throw new RuntimeException(e);
+//				}
+//			}
+//			DriverManager.setLogWriter(pw);
+//		}
 
 		CsvConnection connection;
 		if (filePath.startsWith(READER_CLASS_PREFIX))

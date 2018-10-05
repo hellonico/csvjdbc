@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.relique.io.DataReader;
+import org.relique.util.FastHashMap;
 import org.relique.util.Numbers;
 
 /**
@@ -562,7 +563,7 @@ public class CsvResultSet implements ResultSet
 			maxRows = 0;
 			limit = -1;
 			ArrayList<ArrayList<Object>> groupOrder = new ArrayList<ArrayList<Object>>();
-			Map<ArrayList<Object>, ArrayList<Map<String, Object>>> groups = new MinimumMemoryMap<ArrayList<Object>, ArrayList<Map<String, Object>>>();
+			Map<ArrayList<Object>, ArrayList<Map<String, Object>>> groups = new HashMap<ArrayList<Object>, ArrayList<Map<String, Object>>>();
 			try
 			{
 				while (next())
@@ -594,7 +595,7 @@ public class CsvResultSet implements ResultSet
 					 * reference to all the rows in that group so we can
 					 * later calculate any aggregate functions for each group.
 					 */
-					Map<String, Object> firstRow = new MinimumMemoryMap<String, Object>(values.get(0));
+					Map<String, Object> firstRow = new HashMap<String, Object>(values.get(0));
 					firstRow.put(AggregateFunction.GROUPING_COLUMN_NAME, values);
 
 					if (this.havingClause == null || Boolean.TRUE.equals(this.havingClause.isTrue(firstRow)))
@@ -648,7 +649,7 @@ public class CsvResultSet implements ResultSet
 				 */
 				bufferedRecordEnvironments.clear();
 				if ((savedLimit < 0 || savedLimit > 0) && sqlOffset == 0)
-					bufferedRecordEnvironments.add(new HashMap<String, Object>());
+					bufferedRecordEnvironments.add(new FastHashMap());
 			}
 			finally
 			{
@@ -999,21 +1000,23 @@ public class CsvResultSet implements ResultSet
 		nextResult = thereWasAnAnswer;
 		return thereWasAnAnswer;
 	}
+	static final Map EMPTY = new FastHashMap();
 
 	private Map<String, Object> updateRecordEnvironment(boolean thereWasAnAnswer) throws SQLException
 	{
-		Map<String, Object> objectEnvironment = new MinimumMemoryMap<String, Object>();
+//		Map<String, Object> objectEnvironment = new FastHashMap();
 		if(!thereWasAnAnswer)
 		{
 			recordEnvironment = null;
-			return objectEnvironment;
+			return EMPTY;
 		}
 
 		/*
 		 * Set any parent environment first so it is overridden by current environment.
 		 */
+		Map objectEnvironment = (Map) ((HashMap) this.parentObjectEnvironment).clone();
 		objectEnvironment.put(CsvStatement.STATEMENT_COLUMN_NAME, this.statement);
-		objectEnvironment.putAll(this.parentObjectEnvironment);
+//		objectEnvironment.putAll(this.parentObjectEnvironment);
 
 		for (int i = 0; i < queryEnvironment.size(); i++)
 		{
@@ -1438,7 +1441,8 @@ public class CsvResultSet implements ResultSet
 			 * Create a record containing dummy values.
 			 */
 			HashSet<String> allReaderColumns = new HashSet<String>();
-			HashMap<String, Object> env = new HashMap<String, Object>();
+//			HashMap<String, Object> env = new HashMap<String, Object>();
+			FastHashMap env = new FastHashMap();
 			for(int i=0; i<readerTypeNames.length; i++)
 			{
 				Object literal = StringConverter.getLiteralForTypeName(readerTypeNames[i]);

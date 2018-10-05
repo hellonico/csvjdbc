@@ -1049,7 +1049,8 @@ public class CsvConnection implements Connection
 	public Array createArrayOf(String typeName, Object[] elements) throws SQLException
 	{
 		// TODO Auto-generated method stub
-		return null;
+//		return null;
+		return new CSVArray(typeName, elements);
 	}
 
 	@Override

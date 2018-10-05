@@ -641,9 +641,10 @@ public class CsvRawReader
 			}
 
 		}
-		String[] retVal = new String[values.size()];
-		values.copyInto(retVal);
-		return retVal;
+//		String[] retVal = new String[values.size()];
+//		values.copyInto(retVal);
+		return values.toArray(new String[values.size()]);
+//		return retVal;
 	}
 
 	private boolean atSeparator(String line, int currentPos)

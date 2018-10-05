@@ -47,6 +47,7 @@ public class CsvPreparedStatement extends CsvStatement implements PreparedStatem
 		int resultSetType) throws SQLException
 	{
 		super(connection, resultSetType);
+		CsvDriver.writeLog("Prepared Statement>> "+sql);
 
 		parser = new SqlParser();
 		try
@@ -159,8 +160,14 @@ public class CsvPreparedStatement extends CsvStatement implements PreparedStatem
 	{
 		checkOpen();
 		checkParameterIndex(parameterIndex);
-
-		this.parameters[parameterIndex] = x;
+		StringBuilder param = new StringBuilder();
+		for(Object o :(Object[])x.getArray()) {
+			param.append(o).append(",");
+		}
+		if(param.length()>0)
+			param.deleteCharAt(param.length()-1);
+		
+		this.parameters[parameterIndex] = param.toString();
 	}
 
 	@Override

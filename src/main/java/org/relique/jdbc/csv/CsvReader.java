@@ -18,6 +18,7 @@ package org.relique.jdbc.csv;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
@@ -241,7 +242,10 @@ public class CsvReader extends DataReader
 		if (initialSize == 0)
 			initialSize = 1;
 
-		Map<String, Object> result = new MinimumMemoryMap<String, Object>(initialSize);
+//		Map<String, Object> result = new MinimumMemoryMap<String, Object>(initialSize);
+//		Map<String, Object> result = new LinkedHashMap<String, Object>(initialSize);
+//		Map<String,Object> result = new FastHashMap(initialSize);
+		Map<String,Object> result = new HashMap(initialSize);
 		result.put(StringConverter.COLUMN_NAME, converter);
 
 		for (int i = 0; i < columnNames.length; i++)
